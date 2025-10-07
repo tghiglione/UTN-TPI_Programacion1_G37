@@ -1,10 +1,33 @@
 
 import csv
 
+""" Función auxiliar para validar que la lista de paises no esté vacía"""
+def validar_lista_paises(paises, mensaje="No hay países cargados para mostrar."):
+    if not paises:
+        print(mensaje)
+        return False
+    return True
+
+
+""" Función auxiliar para muestreo de listados"""
+def mostrar_paises(lista_a_mostrar, mensaje="Listado de países:"):
+    print(f"\n{mensaje}")
+    print("-" * 65)
+
+    # Encabezado con anchura fija
+    print(f"|{'Nombre':<15}|{'Población':<15}|{'Superficie':<15}|{'Continente':<15}|")
+    print("-" * 65)
+
+    # Mostrar cada país con las columnas alineadas
+    for pais in lista_a_mostrar:
+        print(f"|{pais['nombre']:<15}|{pais['poblacion']:<15}|{pais['superficie']:<15}|{pais['continente']:<15}|")
+    print("-" * 65)
+
+
+
 """ Lee un archivo CSV con información de países y devuelve una lista de diccionarios.
     Cada país tiene las claves: nombre, poblacion, superficie, continente y sus valores
     correspondientes segun el csv"""
-
 def carga_datos_csv(ruta):
 
     paises = []  # lista donde se guardan todos los países
@@ -47,11 +70,9 @@ def carga_datos_csv(ruta):
 
 
 """ Devuelve los paises ordenados segun un criterio indicado """
-
 def listar_paises(paises, criterio, descendente=False):
 
-    if not paises:
-        print("No hay países cargados para mostrar.")
+    if not validar_lista_paises(paises):
         return
 
     # Validamos que el criterio sea correcto
@@ -71,38 +92,30 @@ def listar_paises(paises, criterio, descendente=False):
     # Se ordena la lista usando sorted() y una función lambda
     paises_ordenados = sorted(paises, key=lambda item: item[criterio_valido], reverse=descendente)
 
-    # Encabezado
-    print(f"\nListado de países ordenados por {criterio_valido} ({'descendente' if descendente else 'ascendente'}):\n")
-    print("Nombre", "Población", "Superficie", "Continente","\n")
-
     # Mostrar cada país
-    for pais in paises_ordenados:
-        print(pais["nombre"], pais["poblacion"], pais["superficie"], pais["continente"])
+    mostrar_paises(paises_ordenados, f"\nListado de países ordenados por {criterio_valido} ({'descendente' if descendente else 'ascendente'}):\n")
+
 
 """ Realiza la busqueda por el nombre del pais """
-
 def buscar_pais(paises, nombre):
-        if not paises:
-            print("No hay países cargados para mostrar.")
+    if not validar_lista_paises(paises):
             return
-        pais_encontrado = ""
-        i=0
-        while i < len(paises) and pais_encontrado == "":    # Se uiliza ciclo while ya que sabemos que los paises no se pueden repetir y asi se evitan ciclos innecesarios
-            if paises[i]['nombre'].lower() == nombre.lower():
-                pais_encontrado = paises[i]
-            i += 1
+    pais_encontrado = []
+    i=0
+    while i < len(paises) and pais_encontrado == []:    # Se uiliza ciclo while ya que sabemos que los paises no se pueden repetir y asi se evitan ciclos innecesarios
+        if paises[i]['nombre'].lower() == nombre.lower():
+            pais_encontrado.append(paises[i])
+        i += 1
 
-        if pais_encontrado != "":
-            print("Pais encontrado: \n")
-            print(pais_encontrado["nombre"], pais_encontrado["poblacion"], pais_encontrado["superficie"], pais_encontrado["continente"])
-        else:
-            print("No se encuentra ese pais.")
+    if pais_encontrado != []:
+        mostrar_paises(pais_encontrado, "Pais encontrado: \n")
+    else:
+        print("No se encuentra ese pais.")
+
 
 """Devuelve una lista de paises pertenecientes al continente indicado."""
-
 def filtrar_por_continente(paises, continente):
-    if not paises:
-        print("No hay países cargados para mostrar.")
+    if not validar_lista_paises(paises):
         return
 
     paises_encontrados = []
@@ -112,20 +125,23 @@ def filtrar_por_continente(paises, continente):
             paises_encontrados.append(pais)
 
     if len(paises_encontrados) != 0:
-        print(f"Lista de paises de {continente}\n")
-        for pais_filtrado in paises_encontrados:
-            print(pais_filtrado["nombre"], pais_filtrado["poblacion"], pais_filtrado["superficie"], pais_filtrado["continente"])
+        mostrar_paises(paises_encontrados, f"Lista de paises de {continente}\n")
     else:
         print(f"El continente es invalido o no hay ningun pais para {continente}")
 
-def filtrar_por_rango(paises, campo, minimo, maximo):
-    """Devuelve paises con poblacion o superficie dentro del rango."""
 
-    # Ejecutada con filtrar_por_rango(paises, "poblacion", 1000000, 10000000)
-    # Valido que la lista contenga algo. Sino sale.
-    if not paises:
-        print("No hay países cargados para poder filtrar según su solicitud.")
+"""Devuelve paises con poblacion o superficie dentro del rango."""
+def filtrar_por_rango(paises, campo, minimo, maximo):
+
+
+    if not validar_lista_paises(paises):
         return
+
+    # Valido los parametros, campos no lo valido porque estaría bueno que se elija desde el menú, para evitar errores de tipeo y ahorrar tiempo al usuario escribiendo y a nosotros validando.
+    if (minimo >= maximo) or minimo < 0 or maximo < 0:
+        print(f'Valores Mínimos y Máximos invalidos.')
+        return
+
     # Creo lista vacía para completar con los potenciales paises encontrados.
     paises_filtrados = []
     for pais in paises:
@@ -133,27 +149,46 @@ def filtrar_por_rango(paises, campo, minimo, maximo):
             paises_filtrados.append(pais)
 
     if len(paises_filtrados) != 0:
-        print(f"Lista de paises que tienen una {campo} entre {minimo} y {maximo}\n")
+        mostrar_paises(paises_filtrados, f"Lista de paises que tienen una {campo} entre {minimo} y {maximo}")
 
-        for pais_filtrado in paises_filtrados:
-            print(pais_filtrado["nombre"], pais_filtrado["poblacion"], pais_filtrado["superficie"], pais_filtrado["continente"])
     else:
         print(f"No hay paises que tengan una {campo} entre {minimo} y {maximo} en nuestros registros.")
 
+    # Retorno la lista por si alguna ves es necesario usarla...
+    return(paises_filtrados)
+
+
+"""Devuelve los paises con el valor maximo y minimo de un campo."""
+def obtener_mayor_menor(paises, campo):
+    paises_min_max = []
+    validar_lista_paises(paises)
+    pais_max, pais_min = paises[0], paises[0]
+    for pais in paises:
+        if pais[campo] > pais_max[campo]:
+            pais_max = pais
+        if pais[campo] < pais_min[campo]:
+            pais_min = pais
+
+    paises_min_max.append(pais_max)
+    paises_min_max.append(pais_min)
+
+    mostrar_paises(paises_min_max, f"Paises con mayor y menor {campo}")
+
+"""Calcula el promedio de poblacion agrupado por continente."""
+def promedio_poblacion_por_continente(paises):
     pass
 
-def obtener_mayor_menor(paises, campo):
-    """Devuelve los paises con el valor maximo y minimo de un campo."""
 
-def promedio_poblacion_por_continente(paises):
-    """Calcula el promedio de poblacion agrupado por continente."""
-
+"""Cuenta cuántos paises hay en cada continente."""
 def cantidad_paises_por_continente(paises):
-    """Cuenta cuántos paises hay en cada continente."""
+    pass
 
+
+"""Muestra los tres paises con mayor poblacion."""
 def top_3_poblacion(paises):
-    """Muestra los tres paises con mayor poblacion."""
+    pass
 
+
+"""Menu de opciones"""
 def menu_principal(paises):
-    """Menu de opciones"""
     pass
