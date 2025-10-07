@@ -12,7 +12,7 @@ def carga_datos_csv(ruta):
     try:
         with open(ruta, newline='', encoding='utf-8') as archivo:
             lector = csv.DictReader(archivo)
-            
+
             for fila in lector:
                 try:
                     # Validar campos obligatorios
@@ -67,7 +67,7 @@ def listar_paises(paises, criterio, descendente=False):
         case _:
             print(f"Criterio inválido.")
             return
-        
+
     # Se ordena la lista usando sorted() y una función lambda
     paises_ordenados = sorted(paises, key=lambda item: item[criterio_valido], reverse=descendente)
 
@@ -91,7 +91,7 @@ def buscar_pais(paises, nombre):
             if paises[i]['nombre'].lower() == nombre.lower():
                 pais_encontrado = paises[i]
             i += 1
-        
+
         if pais_encontrado != "":
             print("Pais encontrado: \n")
             print(pais_encontrado["nombre"], pais_encontrado["poblacion"], pais_encontrado["superficie"], pais_encontrado["continente"])
@@ -104,13 +104,13 @@ def filtrar_por_continente(paises, continente):
     if not paises:
         print("No hay países cargados para mostrar.")
         return
-    
+
     paises_encontrados = []
 
     for pais in paises:
         if pais["continente"].lower() == continente.lower():
             paises_encontrados.append(pais)
-    
+
     if len(paises_encontrados) != 0:
         print(f"Lista de paises de {continente}\n")
         for pais_filtrado in paises_encontrados:
@@ -120,6 +120,26 @@ def filtrar_por_continente(paises, continente):
 
 def filtrar_por_rango(paises, campo, minimo, maximo):
     """Devuelve paises con poblacion o superficie dentro del rango."""
+
+    # Ejecutada con filtrar_por_rango(paises, "poblacion", 1000000, 10000000)
+    # Valido que la lista contenga algo. Sino sale.
+    if not paises:
+        print("No hay países cargados para poder filtrar según su solicitud.")
+        return
+    # Creo lista vacía para completar con los potenciales paises encontrados.
+    paises_filtrados = []
+    for pais in paises:
+        if (minimo < pais[campo] < maximo):
+            paises_filtrados.append(pais)
+
+    if len(paises_filtrados) != 0:
+        print(f"Lista de paises que tienen una {campo} entre {minimo} y {maximo}\n")
+
+        for pais_filtrado in paises_filtrados:
+            print(pais_filtrado["nombre"], pais_filtrado["poblacion"], pais_filtrado["superficie"], pais_filtrado["continente"])
+    else:
+        print(f"No hay paises que tengan una {campo} entre {minimo} y {maximo} en nuestros registros.")
+
     pass
 
 def obtener_mayor_menor(paises, campo):
