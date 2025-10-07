@@ -183,17 +183,62 @@ def obtener_mayor_menor(paises, campo):
 
 """Calcula el promedio de poblacion agrupado por continente."""
 def promedio_poblacion_por_continente(paises):
-    pass
+
+    if not validar_lista_paises(paises):
+        return
+
+    suma_poblacion_por_continente = {}
+    conteo_pais_por_continente = {}
+
+    for pais in paises:
+        continente = pais['continente']         #por cada pais tomo el continente y su poblacion
+        poblacion = pais['poblacion']
+
+        if continente not in suma_poblacion_por_continente:
+            suma_poblacion_por_continente[continente] = poblacion       # armo dos diccionarios con el conteo de paises por continente y tambien sumando la poblacion por continente
+            conteo_pais_por_continente[continente] = 1
+        else:
+            suma_poblacion_por_continente[continente] += int(poblacion)
+            conteo_pais_por_continente[continente] += 1
+
+    for continente in suma_poblacion_por_continente:
+        promedio = suma_poblacion_por_continente[continente] / conteo_pais_por_continente.get(continente)       #calculo e imprimo el promedio de poblacion de cada continente
+        print(f"Promedio {continente}: {promedio}")        
 
 
 """Cuenta cuántos paises hay en cada continente."""
 def cantidad_paises_por_continente(paises):
-    pass
+    if not validar_lista_paises(paises):
+        return
+
+    conteo_pais_por_continente = {}
+
+    for pais in paises:
+        continente = pais['continente']
+
+        if continente not in conteo_pais_por_continente:    #armo diccionario con el conteo de paises por continente
+            conteo_pais_por_continente[continente] = 1
+        else:
+            conteo_pais_por_continente[continente] += 1
+
+    for continente in conteo_pais_por_continente:
+        print(f"Cantidad de paises en {continente}: {conteo_pais_por_continente[continente]}")  #imprimo el conteo de paises por continente
 
 
 """Muestra los tres paises con mayor poblacion."""
 def top_3_poblacion(paises):
-    pass
+
+    if not validar_lista_paises(paises):
+        return
+
+    # Se ordena la lista usando sorted() y una función lambda
+    paises_ordenados = sorted(paises, key=lambda item: item['poblacion'], reverse=True)
+
+    #solo tomo los 3 primeros
+    top_3 = paises_ordenados[:3]
+
+    # Mostrar cada país
+    mostrar_paises(top_3, f"\nTop 3 paises mas poblados:\n")
 
 
 """Menu de opciones"""

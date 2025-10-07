@@ -1,4 +1,4 @@
-from funciones import carga_datos_csv, listar_paises, buscar_pais, filtrar_por_continente, filtrar_por_rango, obtener_mayor_menor
+from funciones import carga_datos_csv, listar_paises, buscar_pais, filtrar_por_continente, filtrar_por_rango, obtener_mayor_menor, promedio_poblacion_por_continente, cantidad_paises_por_continente, top_3_poblacion
 
 def main():
     ruta = "paises.csv"
@@ -14,6 +14,13 @@ def main():
     filtrar_por_rango(paises, "poblacion", 0, 99999999)
     print("_" * 65)
     obtener_mayor_menor(paises, "superficie")
+    print("_" * 65)
+    promedio_poblacion_por_continente(paises)
+    print("_" * 65)
+    cantidad_paises_por_continente(paises)
+    print("_" * 65)
+    top_3_poblacion(paises)
+
 
 if __name__ == "__main__":
     main()
