@@ -160,18 +160,25 @@ def filtrar_por_rango(paises, campo, minimo, maximo):
 
 """Devuelve los paises con el valor maximo y minimo de un campo."""
 def obtener_mayor_menor(paises, campo):
+    # Variables auxiliares
     paises_min_max = []
-    validar_lista_paises(paises)
     pais_max, pais_min = paises[0], paises[0]
+
+    # Valido lista de paises
+    validar_lista_paises(paises)
+    # Si esta OK la proceso
     for pais in paises:
+        # Guardo los max y min
         if pais[campo] > pais_max[campo]:
             pais_max = pais
         if pais[campo] < pais_min[campo]:
             pais_min = pais
 
+    # Para poder mostrarla creo una lista de diccionarios
     paises_min_max.append(pais_max)
     paises_min_max.append(pais_min)
 
+    # Muestro la lista final en forma tabular
     mostrar_paises(paises_min_max, f"Paises con mayor y menor {campo}")
 
 """Calcula el promedio de poblacion agrupado por continente."""
