@@ -146,9 +146,27 @@ def buscar_pais(paises, nombre):
 """Devuelve una lista de paises pertenecientes al continente indicado."""
 
 
-def filtrar_por_continente(paises, continente):
+def filtrar_por_continente(paises):
     if not validar_lista_paises(paises):
         return
+
+    continentes = {
+        "1": "America",
+        "2": "Europa",
+        "3": "Asia",
+        "4": "Africa",
+        "5": "Oceania",
+        "6": "Antartida",
+    }
+
+    continente = ""
+    while continente not in continentes:
+        continente = input(
+            "\nSeleccione un continente:\n"
+            "1- América\n2- Europa\n3- Asia\n4- África\n5- Oceanía\n6- Antártida\n> "
+        )
+
+    continente = continentes[continente]
 
     paises_encontrados = []
 
@@ -326,24 +344,7 @@ def menu_principal(paises):
                 nombre = input("Ingrese el nombre del país a buscar\n> ")
                 buscar_pais(paises, nombre)
             case "3":
-                continentes = {
-                    "1": "America",
-                    "2": "Europa",
-                    "3": "Asia",
-                    "4": "Africa",
-                    "5": "Oceania",
-                    "6": "Antartida",
-                }
-
-                continente = ""
-                while continente not in continentes:
-                    continente = input(
-                        "\nSeleccione un continente:\n"
-                        "1- América\n2- Europa\n3- Asia\n4- África\n5- Oceanía\n6- Antártida\n> "
-                    )
-
-                continente_nombre = continentes[continente]
-                filtrar_por_continente(paises, continente_nombre)
+                filtrar_por_continente(paises)
             case "4":
                 filtrar_por_rango(paises)
             case "5":
