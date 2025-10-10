@@ -1,7 +1,10 @@
-
 import csv
+import opcode
+from typing import ParamSpecArgs
 
 """ Función auxiliar para validar que la lista de paises no esté vacía"""
+
+
 def validar_lista_paises(paises, mensaje="No hay países cargados para mostrar."):
     if not paises:
         print(mensaje)
@@ -10,36 +13,52 @@ def validar_lista_paises(paises, mensaje="No hay países cargados para mostrar."
 
 
 """ Función auxiliar para muestreo de listados"""
+
+
 def mostrar_paises(lista_a_mostrar, mensaje="Listado de países:"):
     print(f"\n{mensaje}")
-    print("-" * 65)
+    print("-" * 69)
 
     # Encabezado con anchura fija
-    print(f"|{'Nombre':<15}|{'Población':<15}|{'Superficie':<15}|{'Continente':<15}|")
-    print("-" * 65)
+    print(
+        "| {:<15}| {:<15}| {:<15}| {:<15}|".format(
+            "Nombre", "Población", "Superficie", "Continente"
+        )
+    )
+    print("-" * 69)
 
     # Mostrar cada país con las columnas alineadas
     for pais in lista_a_mostrar:
-        print(f"|{pais['nombre']:<15}|{pais['poblacion']:<15}|{pais['superficie']:<15}|{pais['continente']:<15}|")
-    print("-" * 65)
-
+        print(
+            "| {nombre:<15}| {poblacion:<15}| {superficie:<15}| {continente:<15}|".format(
+                **pais
+            )
+        )
+    print("-" * 69)
 
 
 """ Lee un archivo CSV con información de países y devuelve una lista de diccionarios.
     Cada país tiene las claves: nombre, poblacion, superficie, continente y sus valores
     correspondientes segun el csv"""
+
+
 def carga_datos_csv(ruta):
 
     paises = []  # lista donde se guardan todos los países
 
     try:
-        with open(ruta, newline='', encoding='utf-8') as archivo:
+        with open(ruta, newline="", encoding="utf-8") as archivo:
             lector = csv.DictReader(archivo)
 
             for fila in lector:
                 try:
                     # Validar campos obligatorios
-                    if not fila["nombre"] or not fila["poblacion"] or not fila["superficie"] or not fila["continente"]:
+                    if (
+                        not fila["nombre"]
+                        or not fila["poblacion"]
+                        or not fila["superficie"]
+                        or not fila["continente"]
+                    ):
                         print(f"Registro incompleto: {fila}")
                         continue
 
@@ -48,7 +67,7 @@ def carga_datos_csv(ruta):
                         "nombre": fila["nombre"].strip(),
                         "poblacion": int(fila["poblacion"]),
                         "superficie": int(fila["superficie"]),
-                        "continente": fila["continente"].strip()
+                        "continente": fila["continente"].strip(),
                     }
 
                     paises.append(pais)
@@ -70,6 +89,8 @@ def carga_datos_csv(ruta):
 
 
 """ Devuelve los paises ordenados segun un criterio indicado """
+
+
 def listar_paises(paises, criterio, descendente=False):
 
     if not validar_lista_paises(paises):
@@ -86,24 +107,33 @@ def listar_paises(paises, criterio, descendente=False):
         case 4:
             criterio_valido = "continente"
         case _:
-            print(f"Criterio inválido.")
+            print("Criterio inválido.")
             return
 
     # Se ordena la lista usando sorted() y una función lambda
-    paises_ordenados = sorted(paises, key=lambda item: item[criterio_valido], reverse=descendente)
+    paises_ordenados = sorted(
+        paises, key=lambda item: item[criterio_valido], reverse=descendente
+    )
 
     # Mostrar cada país
-    mostrar_paises(paises_ordenados, f"\nListado de países ordenados por {criterio_valido} ({'descendente' if descendente else 'ascendente'}):\n")
+    mostrar_paises(
+        paises_ordenados,
+        f"\nListado de países ordenados por {criterio_valido} ({'descendente' if descendente else 'ascendente'}):\n",
+    )
 
 
 """ Realiza la busqueda por el nombre del pais """
+
+
 def buscar_pais(paises, nombre):
     if not validar_lista_paises(paises):
-            return
+        return
     pais_encontrado = []
-    i=0
-    while i < len(paises) and pais_encontrado == []:    # Se uiliza ciclo while ya que sabemos que los paises no se pueden repetir y asi se evitan ciclos innecesarios
-        if paises[i]['nombre'].lower() == nombre.lower():
+    i = 0
+    while (
+        i < len(paises) and pais_encontrado == []
+    ):  # Se uiliza ciclo while ya que sabemos que los paises no se pueden repetir y asi se evitan ciclos innecesarios
+        if paises[i]["nombre"].lower() == nombre.lower():
             pais_encontrado.append(paises[i])
         i += 1
 
@@ -114,6 +144,8 @@ def buscar_pais(paises, nombre):
 
 
 """Devuelve una lista de paises pertenecientes al continente indicado."""
+
+
 def filtrar_por_continente(paises, continente):
     if not validar_lista_paises(paises):
         return
@@ -131,59 +163,86 @@ def filtrar_por_continente(paises, continente):
 
 
 """Devuelve paises con poblacion o superficie dentro del rango."""
-def filtrar_por_rango(paises, campo, minimo, maximo):
 
 
+def filtrar_por_rango(paises):
     if not validar_lista_paises(paises):
         return
 
-    # Valido los parametros, campos no lo valido porque estaría bueno que se elija desde el menú, para evitar errores de tipeo y ahorrar tiempo al usuario escribiendo y a nosotros validando.
-    if (minimo >= maximo) or minimo < 0 or maximo < 0:
-        print(f'Valores Mínimos y Máximos invalidos.')
+    print(
+        "Elija el criterio a utilizar para filtrar\n"
+        "1. Población.\n"
+        "2. Superficie.\n"
+    )
+    campo_carga = input("Seleccione una opción\n> ")
+    if campo_carga == "1":
+        campo = "poblacion"
+    elif campo_carga == "2":
+        campo = "superficie"
+    else:
+        print("Ingreso inválido")
         return
 
-    # Creo lista vacía para completar con los potenciales paises encontrados.
+    try:
+        minimo_carga = input(f"Ingrese el límite inferior del rango de {campo}\n> ")
+        maximo_carga = input(f"Ingrese el límite superior del rango de {campo}\n> ")
+        minimo = int(minimo_carga)
+        maximo = int(maximo_carga)
+    except:
+        print(
+            "\nIngrese valores validos."
+            f"\nIngresó un mínimo = {minimo_carga}"
+            f"\nIngresó un máximo = {maximo_carga}"
+            "\nUn ejemplo de ingreso correcto sería: \n- Mínimo = 505990 \n- Máximo = 45376763"
+        )
+        return
+
+    if minimo < 0 or maximo < 0 or minimo >= maximo:
+        print("Valores mínimos y máximos inválidos.")
+        return
+
     paises_filtrados = []
     for pais in paises:
-        if (minimo < pais[campo] < maximo):
+        if minimo < pais[campo] < maximo:
             paises_filtrados.append(pais)
 
     if len(paises_filtrados) != 0:
-        mostrar_paises(paises_filtrados, f"Lista de paises que tienen una {campo} entre {minimo} y {maximo}")
-
+        mostrar_paises(
+            paises_filtrados,
+            f"Lista de paises que tienen una {campo} entre {minimo} y {maximo}",
+        )
     else:
-        print(f"No hay paises que tengan una {campo} entre {minimo} y {maximo} en nuestros registros.")
+        print(
+            f"No hay paises que tengan una {campo} entre {minimo} y {maximo} en nuestros registros."
+        )
 
-    # Retorno la lista por si alguna ves es necesario usarla...
-    return(paises_filtrados)
+    return paises_filtrados
 
 
 """Devuelve los paises con el valor maximo y minimo de un campo."""
+
+
 def obtener_mayor_menor(paises, campo):
-    # Variables auxiliares
     paises_min_max = []
     pais_max, pais_min = paises[0], paises[0]
 
-    # Valido lista de paises
     validar_lista_paises(paises)
-    # Si esta OK la proceso
     for pais in paises:
-        # Guardo los max y min
         if pais[campo] > pais_max[campo]:
             pais_max = pais
         if pais[campo] < pais_min[campo]:
             pais_min = pais
 
-    # Para poder mostrarla creo una lista de diccionarios
     paises_min_max.append(pais_max)
     paises_min_max.append(pais_min)
 
-    # Muestro la lista final en forma tabular
     mostrar_paises(paises_min_max, f"Paises con mayor y menor {campo}")
 
-"""Calcula el promedio de poblacion agrupado por continente."""
-def promedio_poblacion_por_continente(paises):
 
+"""Calcula el promedio de poblacion agrupado por continente."""
+
+
+def promedio_poblacion_por_continente(paises):
     if not validar_lista_paises(paises):
         return
 
@@ -191,22 +250,26 @@ def promedio_poblacion_por_continente(paises):
     conteo_pais_por_continente = {}
 
     for pais in paises:
-        continente = pais['continente']         #por cada pais tomo el continente y su poblacion
-        poblacion = pais['poblacion']
+        continente = pais["continente"]
+        poblacion = pais["poblacion"]
 
         if continente not in suma_poblacion_por_continente:
-            suma_poblacion_por_continente[continente] = poblacion       # armo dos diccionarios con el conteo de paises por continente y tambien sumando la poblacion por continente
+            suma_poblacion_por_continente[continente] = poblacion
             conteo_pais_por_continente[continente] = 1
         else:
             suma_poblacion_por_continente[continente] += int(poblacion)
             conteo_pais_por_continente[continente] += 1
 
     for continente in suma_poblacion_por_continente:
-        promedio = suma_poblacion_por_continente[continente] / conteo_pais_por_continente.get(continente)       #calculo e imprimo el promedio de poblacion de cada continente
-        print(f"Promedio {continente}: {promedio}")        
+        promedio = suma_poblacion_por_continente[
+            continente
+        ] / conteo_pais_por_continente.get(continente)
+        print(f"Promedio {continente}: {promedio}")
 
 
 """Cuenta cuántos paises hay en cada continente."""
+
+
 def cantidad_paises_por_continente(paises):
     if not validar_lista_paises(paises):
         return
@@ -214,33 +277,84 @@ def cantidad_paises_por_continente(paises):
     conteo_pais_por_continente = {}
 
     for pais in paises:
-        continente = pais['continente']
+        continente = pais["continente"]
 
-        if continente not in conteo_pais_por_continente:    #armo diccionario con el conteo de paises por continente
+        if continente not in conteo_pais_por_continente:
             conteo_pais_por_continente[continente] = 1
         else:
             conteo_pais_por_continente[continente] += 1
 
     for continente in conteo_pais_por_continente:
-        print(f"Cantidad de paises en {continente}: {conteo_pais_por_continente[continente]}")  #imprimo el conteo de paises por continente
+        print(
+            f"Cantidad de paises en {continente}: {conteo_pais_por_continente[continente]}"
+        )
 
 
 """Muestra los tres paises con mayor poblacion."""
-def top_3_poblacion(paises):
 
+
+def top_3_poblacion(paises):
     if not validar_lista_paises(paises):
         return
 
-    # Se ordena la lista usando sorted() y una función lambda
-    paises_ordenados = sorted(paises, key=lambda item: item['poblacion'], reverse=True)
-
-    #solo tomo los 3 primeros
+    paises_ordenados = sorted(paises, key=lambda item: item["poblacion"], reverse=True)
     top_3 = paises_ordenados[:3]
-
-    # Mostrar cada país
-    mostrar_paises(top_3, f"\nTop 3 paises mas poblados:\n")
+    mostrar_paises(top_3, "\nTop 3 paises mas poblados:\n")
 
 
 """Menu de opciones"""
+
+
 def menu_principal(paises):
-    pass
+    opcion = ""
+    while opcion != "7":
+        print(
+            "1. Mostrar listao completo de paises\n"
+            "2. Buscar país por nombre\n"
+            "3. Filtrar por continente\n"
+            "4. Filtrar por rango (población o superficie)\n"
+            "5. Ordenar países\n"
+            "6. Mostrar estadísticas\n"
+            "7. Salir\n"
+        )
+        opcion = input("Seleccione una opción\n> ")
+
+        match opcion:
+            case "1":
+                listar_paises(paises, 2, False)
+            case "2":
+                nombre = input("Ingrese el nombre del país a buscar\n> ")
+                buscar_pais(paises, nombre)
+            case "3":
+                continentes = {
+                    "1": "America",
+                    "2": "Europa",
+                    "3": "Asia",
+                    "4": "Africa",
+                    "5": "Oceania",
+                    "6": "Antartida",
+                }
+
+                continente = ""
+                while continente not in continentes:
+                    continente = input(
+                        "\nSeleccione un continente:\n"
+                        "1- América\n2- Europa\n3- Asia\n4- África\n5- Oceanía\n6- Antártida\n> "
+                    )
+
+                continente_nombre = continentes[continente]
+                filtrar_por_continente(paises, continente_nombre)
+            case "4":
+                filtrar_por_rango(paises)
+            case "5":
+                pass
+            case "6":
+                pass
+            case "7":
+                print("Saliendo del programa...")
+            case _:
+                print("Opción no válida.")
+        input("\n\nPresione enter para volver al MENU...")
+        print(
+            "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+        )
