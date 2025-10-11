@@ -1,6 +1,5 @@
 import csv
-import opcode
-from typing import ParamSpecArgs
+
 
 """ Función auxiliar para validar que la lista de paises no esté vacía"""
 
@@ -88,67 +87,11 @@ def carga_datos_csv(ruta):
         return []
 
 
-""" Devuelve los paises ordenados segun un criterio indicado """
-
-
-def listar_paises(paises):
-
-    if not validar_lista_paises(paises):
-        return
-
-    criterio = input(
-        "\nSeleccione un criterio para ordenar la lista:"
-        "\n1- Nombre"
-        "\n2- Población"
-        "\n3- Superficie"
-        "\n4- Continente"
-        "\n>"
-    )
-    # Validamos que el criterio sea correcto
-    match criterio:
-        case "1":
-            criterio_valido = "nombre"
-        case "2":
-            criterio_valido = "poblacion"
-        case "3":
-            criterio_valido = "superficie"
-        case "4":
-            criterio_valido = "continente"
-        case _:
-            print("Criterio inválido.")
-            return
-
-    orden = input(
-        "\nElija en que orden quiere ordenar la lista:"
-        "\n1- Ascendente  (menor a mayor o A a la Z)"
-        "\n2- Descendente (mayor a menor o Z a la A)"
-        "\n>"
-    )
-    match orden:
-        case "1":
-            descendente = False
-        case "2":
-            descendente = True
-        case _:
-            print("Ingreso inválido.")
-            return
-
-    # Se ordena la lista usando sorted() y una función lambda
-    paises_ordenados = sorted(
-        paises, key=lambda item: item[criterio_valido], reverse=descendente
-    )
-
-    # Mostrar cada país
-    mostrar_paises(
-        paises_ordenados,
-        f"\nListado de países ordenados por {criterio_valido} ({'descendente' if descendente else 'ascendente'}):\n",
-    )
-
-
-""" Realiza la busqueda por el nombre del pais """
+""" OPCION 1 - Realiza la busqueda por el nombre del pais """
 
 
 def buscar_pais(paises):
+
     if not validar_lista_paises(paises):
         return
     nombre = input("Ingrese el nombre del país a buscar\n> ")
@@ -167,7 +110,7 @@ def buscar_pais(paises):
         print("No se encuentra ese pais.")
 
 
-"""Devuelve una lista de paises pertenecientes al continente indicado."""
+""" OPCION 2 - Devuelve una lista de paises pertenecientes al continente indicado."""
 
 
 def filtrar_por_continente(paises):
@@ -186,7 +129,7 @@ def filtrar_por_continente(paises):
     continente = ""
     while continente not in continentes:
         continente = input(
-            "\nSeleccione un continente:\n"
+            "Seleccione un continente:\n"
             "1- América\n2- Europa\n3- Asia\n4- África\n5- Oceanía\n6- Antártida\n> "
         )
 
@@ -204,7 +147,7 @@ def filtrar_por_continente(paises):
         print(f"El continente es invalido o no hay ningun pais para {continente}")
 
 
-"""Devuelve paises con poblacion o superficie dentro del rango."""
+""" OPCIÓN 3 - Devuelve paises con poblacion o superficie dentro del rango."""
 
 
 def filtrar_por_rango(paises):
@@ -261,7 +204,112 @@ def filtrar_por_rango(paises):
     return paises_filtrados
 
 
-"""Devuelve los paises con el valor maximo y minimo de un campo."""
+""" OPCION 4 - Devuelve los paises ordenados segun un criterio indicado """
+
+
+def listar_paises(paises):
+
+    if not validar_lista_paises(paises):
+        return
+
+    criterio = input(
+        "Seleccione un criterio para ordenar la lista:"
+        "\n1- Nombre"
+        "\n2- Población"
+        "\n3- Superficie"
+        "\n4- Continente"
+        "\n>"
+    )
+    # Validamos que el criterio sea correcto
+    match criterio:
+        case "1":
+            criterio_valido = "nombre"
+        case "2":
+            criterio_valido = "poblacion"
+        case "3":
+            criterio_valido = "superficie"
+        case "4":
+            criterio_valido = "continente"
+        case _:
+            print("Criterio inválido.")
+            return
+
+    orden = input(
+        "\nElija en que orden quiere ordenar la lista:"
+        "\n1- Ascendente  (menor a mayor o A a la Z)"
+        "\n2- Descendente (mayor a menor o Z a la A)"
+        "\n>"
+    )
+    match orden:
+        case "1":
+            descendente = False
+        case "2":
+            descendente = True
+        case _:
+            print("Ingreso inválido.")
+            return
+
+    # Se ordena la lista usando sorted() y una función lambda
+    paises_ordenados = sorted(
+        paises, key=lambda item: item[criterio_valido], reverse=descendente
+    )
+
+    # Mostrar cada país
+    mostrar_paises(
+        paises_ordenados,
+        f"\nListado de países ordenados por {criterio_valido} ({'descendente' if descendente else 'ascendente'}):\n",
+    )
+
+
+""" OPCION 5 - Simplemente para no tener que desarrollar el menu de la opcion 5 en el principal """
+
+
+def estadisticas(paises):
+    if not validar_lista_paises(paises):
+        return
+
+    print(
+        "\n1. Obtener el pais con mayor y menor superficie o poblacion\n"
+        "2. Promedio de población por continente\n"
+        "3. Promedio de m2 de superficie por continente\n"
+        "4. Cantidad de paises por continente\n"
+        "5. Top 3 paises con mayor población\n"
+    )
+    opcion = input("Seleccione una opción\n> ")
+
+    match opcion:
+        case "1":
+            campo = ""
+            while campo != "1" and campo != "2":
+                criterio = int(
+                    input(
+                        "\nSeleccione el criterio bajo el cual desea obtener el menor y mayor"
+                        "\n1- Superficie"
+                        "\n2- Población"
+                        "\n>"
+                    )
+                )
+                if criterio == "1":
+                    campo = "superficie"
+                elif criterio == "2":
+                    campo = "poblacion"
+                else:
+                    print("\nSe ingreso un valor erroneo, volviendo al menú.")
+            obtener_mayor_menor(paises, campo)
+        case "2":
+            promedio_poblacion_por_continente(paises)
+        case "3":
+            promedio_superficie_por_continente(paises)
+        case "4":
+            cantidad_paises_por_continente(paises)
+        case "5":
+            top_3_poblacion(paises)
+        case "_":
+            print("Ingreso una opción invalida. Volviendo al menú")
+            return
+
+
+""" OPCION 5.1 - Devuelve los paises con el valor maximo y minimo de un campo."""
 
 
 def obtener_mayor_menor(paises, campo):
@@ -281,12 +329,10 @@ def obtener_mayor_menor(paises, campo):
     mostrar_paises(paises_min_max, f"Paises con mayor y menor {campo}")
 
 
-"""Calcula el promedio de poblacion agrupado por continente."""
+""" OPCION 5.2 - Calcula el promedio de poblacion agrupado por continente."""
 
 
 def promedio_poblacion_por_continente(paises):
-    if not validar_lista_paises(paises):
-        return
 
     suma_poblacion_por_continente = {}
     conteo_pais_por_continente = {}
@@ -309,12 +355,54 @@ def promedio_poblacion_por_continente(paises):
         print(f"Promedio {continente}: {promedio}")
 
 
-"""Cuenta cuántos paises hay en cada continente."""
+""" OPCION 5.3 - Promedio de superficies por continente."""
+
+
+def promedio_superficie_por_continente(paises):
+    # Como solo son 6 continentes los puedo inicialziar acá
+    CONTINENTES_BASE = {
+        "America": 0,
+        "Europa": 0,
+        "Asia": 0,
+        "Africa": 0,
+        "Oceania": 0,
+        "Antartida": 0,
+    }
+
+    # Inicialización de diccionarios usando el diccionario de continentes
+    suma_superficie_por_continente = CONTINENTES_BASE.copy()
+    conteo_pais_por_continente = CONTINENTES_BASE.copy()
+
+    # Primera pasada: Acumular datos
+    for pais in paises:
+        continente = pais["continente"]
+        superficie = pais["superficie"]
+
+        suma_superficie_por_continente[continente] += superficie
+        conteo_pais_por_continente[continente] += 1
+
+    print("\n--- PROMEDIO DE SUPERFICIE POR CONTINENTE ---\n")
+
+    # Segunda pasada: Calcular y mostrar promedios
+    for continente in suma_superficie_por_continente:
+        suma = suma_superficie_por_continente[continente]
+        conteo = conteo_pais_por_continente[continente]
+
+        if conteo > 0:
+            promedio = suma / conteo
+            # Uso de separador de miles con :,.2f
+            print(f"Promedio de superficie para {continente}: {promedio} km²")
+        else:
+            # Maneja el caso donde el continente fue inicializado pero no tiene países cargados
+            print(
+                f"Promedio de superficie para {continente}: 0.00 km² (Sin países cargados o cargados con superficie igual a 0)"
+            )
+
+
+""" OPCION 5.4 - Cuenta cuántos paises hay en cada continente."""
 
 
 def cantidad_paises_por_continente(paises):
-    if not validar_lista_paises(paises):
-        return
 
     conteo_pais_por_continente = {}
 
@@ -332,12 +420,10 @@ def cantidad_paises_por_continente(paises):
         )
 
 
-"""Muestra los tres paises con mayor poblacion."""
+""" OPCION 5.5 - Muestra los tres paises con mayor poblacion."""
 
 
 def top_3_poblacion(paises):
-    if not validar_lista_paises(paises):
-        return
 
     paises_ordenados = sorted(paises, key=lambda item: item["poblacion"], reverse=True)
     top_3 = paises_ordenados[:3]
