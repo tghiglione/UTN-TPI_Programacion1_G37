@@ -91,23 +91,46 @@ def carga_datos_csv(ruta):
 """ Devuelve los paises ordenados segun un criterio indicado """
 
 
-def listar_paises(paises, criterio, descendente=False):
+def listar_paises(paises):
 
     if not validar_lista_paises(paises):
         return
 
+    criterio = input(
+        "\nSeleccione un criterio para ordenar la lista:"
+        "\n1- Nombre"
+        "\n2- Población"
+        "\n3- Superficie"
+        "\n4- Continente"
+        "\n>"
+    )
     # Validamos que el criterio sea correcto
     match criterio:
-        case 1:
+        case "1":
             criterio_valido = "nombre"
-        case 2:
+        case "2":
             criterio_valido = "poblacion"
-        case 3:
+        case "3":
             criterio_valido = "superficie"
-        case 4:
+        case "4":
             criterio_valido = "continente"
         case _:
             print("Criterio inválido.")
+            return
+
+    orden = input(
+        "\nElija en que orden quiere ordenar la lista:"
+        "\n1- Ascendente  (menor a mayor o A a la Z)"
+        "\n2- Descendente (mayor a menor o Z a la A)"
+        "\n>"
+    )
+    match orden:
+        case "1":
+            descendente = False
+        case "2":
+            descendente = True
+        case _:
+            print("Ingreso inválido.")
             return
 
     # Se ordena la lista usando sorted() y una función lambda
@@ -125,9 +148,10 @@ def listar_paises(paises, criterio, descendente=False):
 """ Realiza la busqueda por el nombre del pais """
 
 
-def buscar_pais(paises, nombre):
+def buscar_pais(paises):
     if not validar_lista_paises(paises):
         return
+    nombre = input("Ingrese el nombre del país a buscar\n> ")
     pais_encontrado = []
     i = 0
     while (
@@ -318,44 +342,3 @@ def top_3_poblacion(paises):
     paises_ordenados = sorted(paises, key=lambda item: item["poblacion"], reverse=True)
     top_3 = paises_ordenados[:3]
     mostrar_paises(top_3, "\nTop 3 paises mas poblados:\n")
-
-
-"""Menu de opciones"""
-
-
-def menu_principal(paises):
-    opcion = ""
-    while opcion != "7":
-        print(
-            "1. Mostrar listao completo de paises\n"
-            "2. Buscar país por nombre\n"
-            "3. Filtrar por continente\n"
-            "4. Filtrar por rango (población o superficie)\n"
-            "5. Ordenar países\n"
-            "6. Mostrar estadísticas\n"
-            "7. Salir\n"
-        )
-        opcion = input("Seleccione una opción\n> ")
-
-        match opcion:
-            case "1":
-                listar_paises(paises, 2, False)
-            case "2":
-                nombre = input("Ingrese el nombre del país a buscar\n> ")
-                buscar_pais(paises, nombre)
-            case "3":
-                filtrar_por_continente(paises)
-            case "4":
-                filtrar_por_rango(paises)
-            case "5":
-                pass
-            case "6":
-                pass
-            case "7":
-                print("Saliendo del programa...")
-            case _:
-                print("Opción no válida.")
-        input("\n\nPresione enter para volver al MENU...")
-        print(
-            "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-        )
