@@ -271,7 +271,7 @@ def estadisticas(paises):
     print(
         "\n1. Obtener el pais con mayor y menor superficie o poblacion\n"
         "2. Promedio de población por continente\n"
-        "3. Promedio de m2 de superficie por continente\n"
+        "3. Promedio de km2 de superficie por continente\n"
         "4. Cantidad de paises por continente\n"
         "5. Top 3 paises con mayor población\n"
     )
@@ -279,16 +279,15 @@ def estadisticas(paises):
 
     match opcion:
         case "1":
-            campo = ""
-            while campo != "1" and campo != "2":
-                criterio = int(
-                    input(
-                        "\nSeleccione el criterio bajo el cual desea obtener el menor y mayor"
-                        "\n1- Superficie"
-                        "\n2- Población"
-                        "\n>"
-                    )
+            criterio = ""
+            while criterio != "1" and criterio != "2":
+                criterio = input(
+                    "\nSeleccione el criterio bajo el cual desea obtener el menor y mayor"
+                    "\n1- Superficie"
+                    "\n2- Población"
+                    "\n>"
                 )
+
                 if criterio == "1":
                     campo = "superficie"
                 elif criterio == "2":
