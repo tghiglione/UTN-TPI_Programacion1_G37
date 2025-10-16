@@ -1,16 +1,16 @@
 # **Explorador de Países: Lectura CSV, Búsquedas y Estadísticas**
 
-### **Trabajo Integrador – Programación I**  
+### **Trabajo Integrador – Programación I**
 _Tecnicatura Universitaria en Programación a Distancia – UTN_
 
 ### **Docentes**
-- **Coordinador:** Alberto Cortez  
-- **Profesora:** Cinthia Rigoni  
-- **Profesor:** Ariel Enferrel  
-- **Profesores Comisión 10 y 5:** Matías Torres y Martina Zabala  
+- **Coordinador:** Alberto Cortez
+- **Profesora:** Cinthia Rigoni
+- **Profesor:** Ariel Enferrel
+- **Profesores Comisión 10 y 5:** Matías Torres y Martina Zabala
 
 ### 👥 **Integrantes**
-- **Tomás Ghiglione** (Comisión 5)  
+- **Tomás Ghiglione** (Comisión 5)
 - **Gabriel Ezequiel Nieva** (Comisión 10)
 
 ## **Descripción del proyecto**
@@ -46,18 +46,22 @@ Se muestra una lista con los continentes (opciones del 1 al 6). Al seleccionar e
 Se muestran las opciones por poblacion o superficie. Al escoger una, se le pide al usuario el minimo y el maximo del rango a buscar y se mostrara en consola un listado de los paises que cumplan dicho rango.
 5) _Opcion 4. Ordenar paises_:
 Se desplegara un nuevo menu con opciones del 1 al 4 con distintos criterios de ordenamiento (nombre, poblacion, superficie, continente). Al seleccionar la opcion se muestra el listado completo ordenado segun el criterio
-6) _Opcion 5. Estadisticas_: 
+6) _Opcion 5. Estadisticas_:
 Se despliega el siguiente menu de opciones para mostrar la estadistica necesaria:
     1. Obtener el pais con mayor y menor superficie o poblacion
     2. Promedio de población por continente
     3. Promedio de km2 de superficie por continente
     4. Cantidad de paises por continente
     5. Top 3 paises con mayor población
+7) _Opción 6. Agregar Pais_:
+Se realiza una modificacion real tanto de la lista en memoria como del archivo CSV. Basicamente se le solicita al usuario que ingrese los datos de un pais (nombre, poblacion, superficie, continente), se los valida, se verifica que esté todo bien con la lista, y se los guarda tanto en la lista en memoria como en el archivo CSV. También al final muestra la lista de paises actualizados
+8) _Opción 7. Modificar Pais_:
+Solicita al usuario un nombre de un pais para modificarle superficie y/o poblacion, si no está muestra error y sale, si está en la lista, valida los datos ingresados y modifica el pais, tanto en lista en memoria como en el archivo CSV. Muestra en pantalla como quedó el pais con sus datos modificados
 
 ## **Bibliografia**
 
 Lectura de archivos CSV:
-https://docs.python.org/es/3.9/library/csv.html 
+https://docs.python.org/es/3.9/library/csv.html
 
 Importacion de modulos:
 https://docs.python.org/es/3.13/reference/import.html
