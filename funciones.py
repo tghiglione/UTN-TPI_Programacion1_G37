@@ -1,5 +1,6 @@
 import csv
 
+ARCHIVO = "paises.csv"  # Ruta al archivo CSV
 
 """ Función auxiliar para validar que la lista de paises no esté vacía"""
 
@@ -42,16 +43,16 @@ def mostrar_paises(lista_a_mostrar, mensaje="Listado de países:"):
 
 
 def carga_datos_csv(ruta):
-
     paises = []  # lista donde se guardan todos los países
 
+    # Acá se usa el try para validar que el archivo existe con ese nombre y ubicacion
     try:
         with open(ruta, newline="", encoding="utf-8") as archivo:
             lector = csv.DictReader(archivo)
 
             for fila in lector:
                 try:
-                    # Validar campos obligatorios
+                    # Validar campos obligatorios, si falta alguno muestra el error
                     if (
                         not fila["nombre"]
                         or not fila["poblacion"]
@@ -75,16 +76,40 @@ def carga_datos_csv(ruta):
                     print(f"Error en el manejo de archivo: {fila}")
                     continue
 
-        print(f"Se cargaron {len(paises)} países correctamente.\n")
+        print(f"Se cargaron {len(paises)} países.\n")
         return paises
 
+    # Si el archivo no existe, se crea un csv con la misma estructura pero con 0 paises
     except FileNotFoundError:
-        print("Error: El archivo no fue encontrado. Verifique la ruta y/o el nombre.")
+        print(f"Archivo '{ruta}' no encontrado. Creando uno nuevo vacío...")
+
+        # Crear un CSV vacío con encabezados
+        with open(ruta, "w", newline="", encoding="utf-8") as nuevo_archivo:
+            escritor = csv.DictWriter(
+                nuevo_archivo,
+                fieldnames=["nombre", "poblacion", "superficie", "continente"],
+            )
+            escritor.writeheader()
+
+        print(f"Archivo '{ruta}' creado correctamente (sin países cargados).\n")
         return []
 
+    # Except de exception lo usamos a lo largo del código para manejar errores que se salgan de nuestros alcances
     except Exception as e:
         print(f"Error inesperado al leer el archivo: {e}")
         return []
+
+
+""" Guarda los datos de la lista en memoria al archivo CSV"""
+
+
+def guardar_paises(paises):
+    # Notar que se abre el archivo en modo "w" write
+    with open(ARCHIVO, "w", newline="", encoding="utf-8") as f:
+        campos = ["nombre", "poblacion", "superficie", "continente"]
+        escritor = csv.DictWriter(f, fieldnames=campos)
+        escritor.writeheader()
+        escritor.writerows(paises)
 
 
 """ OPCION 1 - Realiza la busqueda por el nombre del pais """
@@ -427,3 +452,100 @@ def top_3_poblacion(paises):
     paises_ordenados = sorted(paises, key=lambda item: item["poblacion"], reverse=True)
     top_3 = paises_ordenados[:3]
     mostrar_paises(top_3, "\nTop 3 paises mas poblados:\n")
+
+
+""" OPCION 6 - Agregar un país """
+
+
+def agregar_pais(paises):
+
+    # Primero pido los datos
+    nombre = input("Ingrese el nombre del país:\n> ").strip()
+    poblacion = input("Ingrese la cantidad de habitantes:\n> ").strip()
+    superficie = input("Ingrese la superficie en km²:\n> ").strip()
+    continente = input("Ingrese el nombre del continente:\n> ").strip()
+
+    # Validamos campos vacíos
+    if not nombre or not poblacion or not superficie or not continente:
+        print("\nError, no se permite dejar campos vacíos.")
+        return
+
+    # Validar tipos numéricos, se ingreso como str y se verifica si el usuario ingreso un numero
+    try:
+        poblacion = int(poblacion)
+        superficie = int(superficie)
+
+    except ValueError:
+        print(
+            "\nError, en los campos de poblacion y superficie solo debe ingresar numeros enteros."
+        )
+        return
+
+    # Validar si el pais ya está en el listado
+    for pais in paises:
+        if pais["nombre"].lower() == nombre.lower():
+            print(f"\nEl país '{nombre}' ya existe en el registro.")
+            return
+
+    # Crear diccionario y agregar
+    nuevo_pais = {
+        "nombre": nombre,
+        "poblacion": poblacion,
+        "superficie": superficie,
+        "continente": continente,
+    }
+
+    # Actualiza el listado en memoria
+    paises.append(nuevo_pais)
+    print(f"\n✅ País '{nombre}' agregado exitosamente.\n")
+    # Actualiza el listado en el CSV. A nivel archivo. Se hace ahora y no al final del programa por cuestiones de persistencia
+    guardar_paises(paises)
+    mostrar_paises(paises, "Listado actualizado de países:")
+
+
+""" OPCION 7 - Modificar población y superficie de un país """
+
+
+def modificar_pais(paises):
+    # validamos que la lista tenga paises
+    if not validar_lista_paises(paises):
+        return
+
+    # solicitamos el nombnre del pais a modificar, con el .strip para quitar espacios antes o despues del ingreso
+    nombre = input("Ingrese el nombre del país a modificar:\n> ").strip()
+
+    # Se recorre toda la lista y se compara usando el lower, cada pais con el ingreso del usuario
+    for pais in paises:
+        # Si el nombre del pais en la lista coincide con el que ingreso el usuario, modificamos.
+        if pais["nombre"].lower() == nombre.lower():
+            print(f"\nPaís encontrado: {pais['nombre']}")
+            print(f"Población actual: {pais['poblacion']}")
+            print(f"Superficie actual: {pais['superficie']} km²")
+
+            # Solicitamos los datos
+            nueva_poblacion = input(
+                "\nIngrese nueva población (ENTER para no cambiar):\n> "
+            ).strip()
+            nueva_superficie = input(
+                "Ingrese nueva superficie en km² (ENTER para no cambiar):\n> "
+            ).strip()
+
+            # Validamos los datos... con try y except siempre dando un mensaje de error con explicacion
+            if nueva_poblacion:
+                try:
+                    pais["poblacion"] = int(nueva_poblacion)
+                except ValueError:
+                    print("Valor inválido. No se modificó la población.")
+
+            if nueva_superficie:
+                try:
+                    pais["superficie"] = int(nueva_superficie)
+                except ValueError:
+                    print("Valor inválido. No se modificó la superficie.")
+
+            print("\nDatos actualizados correctamente.")
+            # Mostramos el pais como quedó...
+            mostrar_paises([pais], "País modificado:")
+            return
+
+    print(f"\nNo se encontró el país '{nombre}'.")
