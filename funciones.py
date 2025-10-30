@@ -546,6 +546,7 @@ def modificar_pais(paises):
             print("\nDatos actualizados correctamente.")
             # Mostramos el pais como quedó...
             mostrar_paises([pais], "País modificado:")
+            guardar_paises(paises)
             return
 
     print(f"\nNo se encontró el país '{nombre}'.")
